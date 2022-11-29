@@ -17,8 +17,7 @@
                 <div class="card">
                     <div class="card-body mx-auto">
                         <h5 class="card-title">Autenticar o Aplicativo</h5>
-                        <p class="card-text">Está função é utilizada para autenticar o aplicativo na loja de venda.</p>
-                        <button id="btn-autenticar" class="btn btn-primary btn-block">Autenticar</button>
+                        <p class="card-text">Está função é utilizada para autenticar o aplicativo na loja de venda.</p>                        
                         <div class="col mt-3 w-100 p-0">
                             <div class="input-group">
                                 <div class="col">
@@ -38,10 +37,11 @@
                                     </div>
                                 </div>     
                             </div>
+                            <button id="btn-autenticar" class="btn btn-primary btn-block mt-3">Autenticar</button>
                             <div class="input-group mt-3">
                                 <input type="text" class="form-control" id="link-url" placeholder="URL de Autenticação" aria-describedby="inputGroupPrepend2" required>
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text" id="inputGroupPrepend2">
+                                    <span class="input-group-text" id="copy">
                                         <button class="btn btn-primary btn-block">
                                             Copiar
                                         </button>
@@ -63,25 +63,41 @@
     </script>
 
     <script type="text/javascript">
+
+        //Faz a requisicao AJAX para o PHP gerar a URL para autenticar a conta no app
         $("#btn-autenticar").on("click", function() {
+            var tipoAmbiente = 0;
 
             if($("#radioHomologacao").prop("checked")){
-                alert('Homologacao');
+                tipoAmbiente = 0;
             }else{
-                alert('Producao');
+                tipoAmbiente = 1;
             }
 
             $.ajax({
                 url: './controller/controller_shopee.php',
                 type: 'post',
+                dataType: 'text',
+                data: {
+                    data: tipoAmbiente
+                },
                 success: function(result) {
                     $("#link-url:text").val(result);
-                    window.open(result, 'janela', 'width=1000, height=600, top=250, left=699, scrollbars=yes, status=no, toolbar=no, location=no, directories=no, menubar=no, resizable=no, fullscreen=no');
+                    window.open(result, 'janela', 'width=1000, height=800, top=50, left=50, scrollbars=yes, status=no, toolbar=no, location=no, directories=no, menubar=no, resizable=no, fullscreen=no');
                 },
                 error: function(e, ts, et) {
                     console.log(ts.responseText);
                 }
             });
+        })
+
+        //Copiar texto do campo para area de transferencia
+        $("#copy").on("click", function() {
+            let textoCopiado = document.getElementById("link-url");
+            textoCopiado.select();
+            textoCopiado.setSelectionRange(0, 99999)
+            document.execCommand("copy");
+            alert("URL Copiada para área de transferencia.");
         })
     </script>
 </body>
